@@ -32,6 +32,21 @@ public class FilmController {
         return film.getCategorySet();
     }
 
+    @GetMapping("/getByTitle/{title}")
+    private Iterable<Film> getFilmsByTitle(@PathVariable("title") String titleInput){
+        return filmRepository.findByTitleContains(titleInput);
+    }
+
+    @GetMapping("/getByCatId/{id}")
+    private Iterable<Film> getFilmsByCatId(@PathVariable("id") int catId){
+        return filmRepository.findByCategoryId(catId);
+    }
+
+    @GetMapping("/getByCatName/{catName}")
+    private Iterable<Film> getFilmsByCatName(@PathVariable("catName") String catName){
+        return filmRepository.findByCategoryName(catName);
+    }
+
     @PutMapping("/update/{id}")
     private Film updateFilmById(
             @PathVariable("id") int filmId,

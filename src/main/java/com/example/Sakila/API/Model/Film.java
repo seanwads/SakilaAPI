@@ -1,8 +1,6 @@
 package com.example.Sakila.API.Model;
-
-import com.example.Sakila.API.Model.Category;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.time.Year;
 import java.util.Set;
 
@@ -35,6 +33,10 @@ public class Film {
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> categorySet;
+
+    @OneToMany(mappedBy = "inventoryFilm")
+    @JsonIgnore
+    private Set<Inventory> filmInventory;
 
     public Film() {
     }
@@ -98,5 +100,13 @@ public class Film {
 
     public void setCategorySet(Set<Category> categorySet) {
         this.categorySet = categorySet;
+    }
+
+    public Set<Inventory> getFilmInventory() {
+        return filmInventory;
+    }
+
+    public void setFilmInventory(Set<Inventory> filmInventory) {
+        this.filmInventory = filmInventory;
     }
 }

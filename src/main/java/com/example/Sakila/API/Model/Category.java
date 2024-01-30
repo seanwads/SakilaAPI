@@ -1,8 +1,6 @@
 package com.example.Sakila.API.Model;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.Set;
 
 @Entity

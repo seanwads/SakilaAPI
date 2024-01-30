@@ -1,4 +1,5 @@
 package com.example.Sakila.API.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -14,13 +15,15 @@ public class Rental {
     @Temporal(TemporalType.DATE)
     private Date rentalDate;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "inventory_id", nullable = false)
     private Inventory rentalInventory;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer rentalCustomer;
+    private User rentalUser;
 
     public Rental(){
 
@@ -50,11 +53,11 @@ public class Rental {
         this.rentalInventory = rentalInventory;
     }
 
-    public Customer getRentalCustomer() {
-        return rentalCustomer;
+    public User getRentalCustomer() {
+        return rentalUser;
     }
 
-    public void setRentalCustomer(Customer rentalCustomer) {
-        this.rentalCustomer = rentalCustomer;
+    public void setRentalCustomer(User rentalUser) {
+        this.rentalUser = rentalUser;
     }
 }

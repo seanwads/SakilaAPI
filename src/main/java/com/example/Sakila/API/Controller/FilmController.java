@@ -9,7 +9,6 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Set;
 
-
 @CrossOrigin
 @RequestMapping("/film")
 @RestController

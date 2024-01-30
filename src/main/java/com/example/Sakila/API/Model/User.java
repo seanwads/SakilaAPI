@@ -1,15 +1,16 @@
 package com.example.Sakila.API.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "customer")
-public class Customer {
+public class User {
     @Id
     @Column(name = "customer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
+    private int userId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -23,19 +24,20 @@ public class Customer {
     @Column(name = "active")
     private Boolean active;
 
-    @OneToMany(mappedBy = "rentalCustomer")
+    @JsonIgnore
+    @OneToMany(mappedBy = "rentalUser")
     private Set<Rental> rentalSet;
 
-    public Customer(){
+    public User(){
 
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {

@@ -25,9 +25,7 @@ public class Rental {
     @JoinColumn(name = "customer_id", nullable = false)
     private User rentalUser;
 
-    public Rental(){
-
-    }
+    public Rental(){}
 
     public int getRentalId() {
         return rentalId;

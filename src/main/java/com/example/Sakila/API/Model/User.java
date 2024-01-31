@@ -28,9 +28,7 @@ public class User {
     @OneToMany(mappedBy = "rentalUser")
     private Set<Rental> rentalSet;
 
-    public User(){
-
-    }
+    public User(){}
 
     public int getUserId() {
         return userId;

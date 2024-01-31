@@ -41,8 +41,7 @@ public class Film {
     @ManyToMany(mappedBy = "filmsActedIn")
     private Set<Actor> actors;
 
-    public Film() {
-    }
+    public Film() {}
 
     public Film(int filmId, String title) {
         this.filmId = filmId;

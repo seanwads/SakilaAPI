@@ -15,22 +15,27 @@ import java.util.List;
 @RequestMapping("/user")
 @RestController
 public class UserController {
+    private final UserRepository userRepository;
+    private static final String notFoundResponse = "User not found";
+
     @Autowired
-    private UserRepository userRepository;
+    public UserController(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/get/{id}")
-    private User getUserById(@PathVariable("id") int userId){
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException("User not found"));
+    public User getUserById(@PathVariable("id") int userId){
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
     }
 
     @GetMapping("/getAll")
-    private Iterable<User> getAllUsers(){
+    public Iterable<User> getAllUsers(){
         return userRepository.findAll();
     }
 
     @GetMapping("/getAllFilms/{id}")
-    private List<Film> getAllFilmsByUserId(@PathVariable("id") int userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException("User not found"));
+    public List<Film> getAllFilmsByUserId(@PathVariable("id") int userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
 
         List<Film> films = new ArrayList<>();
         for(Rental rental : user.getRentalSet()){
@@ -41,11 +46,11 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    private User updateUserById(
+    public User updateUserById(
             @PathVariable("id") int userId,
             @RequestBody User updatedUser
     ){
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
 
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
@@ -57,12 +62,12 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    private User createUser(@RequestBody User newUser){
+    public User createUser(@RequestBody User newUser){
         return userRepository.save(newUser);
     }
 
     @DeleteMapping("/delete/{id}")
-    private void deleteUserById(@PathVariable("id") int userId){
+    public void deleteUserById(@PathVariable("id") int userId){
         userRepository.deleteById(userId);
     }
 }

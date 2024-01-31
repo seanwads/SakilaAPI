@@ -14,41 +14,46 @@ import java.util.List;
 @RequestMapping("/cat")
 @RestController
 public class CategoryController {
+    private final CatRepository catRepository;
+    private static final String notFoundResponse = "Category not found";
+
     @Autowired
-    private CatRepository catRepository;
+    public CategoryController(CatRepository catRepository){
+        this.catRepository = catRepository;
+    }
 
     @GetMapping("/get/{id}")
-    private Category getCatById(@PathVariable("id") int catId){
-        return catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
+    public Category getCatById(@PathVariable("id") int catId){
+        return catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
     }
 
     @GetMapping("/getAll")
-    private Iterable<Category> getAllCats(){
+    public Iterable<Category> getAllCats(){
         return catRepository.findAll();
     }
 
     @GetMapping("/getFilmsByCat/{id}")
-    private List<Film> getFilmsByCat(@PathVariable("id") int catId){
-        Category cat = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
+    public List<Film> getFilmsByCat(@PathVariable("id") int catId){
+        Category cat = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         return new ArrayList<>(cat.getFilmSet());
     }
 
     @PutMapping("/update/{id}")
-    private Category updateCatById(
+    public Category updateCatById(
             @PathVariable("id") int catId,
             @RequestBody Category updatedCategory){
-        Category cat = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
+        Category cat = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         cat.setName(updatedCategory.getName());
         return catRepository.save(cat);
     }
 
     @PostMapping("/create")
-    private Category createCat(@RequestBody Category newCat){
+    public Category createCat(@RequestBody Category newCat){
         return catRepository.save(newCat);
     }
 
     @DeleteMapping("/delete/{id}")
-    private void deleteCatById(@PathVariable("id") int catId){
+    public void deleteCatById(@PathVariable("id") int catId){
         catRepository.deleteById(catId);
     }
 }

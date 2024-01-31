@@ -13,46 +13,52 @@ import java.util.Set;
 @RequestMapping("/film")
 @RestController
 public class FilmController {
+
+    private final FilmRepository filmRepository;
+    private static final String notFoundResponse = "Film not found";
+
     @Autowired
-    private FilmRepository filmRepository;
+    public FilmController(FilmRepository filmRepository){
+        this.filmRepository = filmRepository;
+    }
 
     @GetMapping("/get/{id}")
-    private Film getFilmById(@PathVariable("id") int filmId){
-        return filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
+    public Film getFilmById(@PathVariable("id") int filmId){
+        return filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
     }
 
     @GetMapping("/getAll")
-    private Iterable<Film> getAllFilms(){
+    public Iterable<Film> getAllFilms(){
         return filmRepository.findAll();
     }
 
     @GetMapping("/getCategories/{id}")
-    private Set<Category> getCategoriesByFilm(@PathVariable("id") int filmId){
-        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
+    public Set<Category> getCategoriesByFilm(@PathVariable("id") int filmId){
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         return film.getCategorySet();
     }
 
     @GetMapping("/getByTitle/{title}")
-    private Iterable<Film> getFilmsByTitle(@PathVariable("title") String titleInput){
+    public Iterable<Film> getFilmsByTitle(@PathVariable("title") String titleInput){
         return filmRepository.findByTitleContains(titleInput);
     }
 
     @GetMapping("/getByCatId/{id}")
-    private Iterable<Film> getFilmsByCatId(@PathVariable("id") int catId){
+    public Iterable<Film> getFilmsByCatId(@PathVariable("id") int catId){
         return filmRepository.findByCategoryId(catId);
     }
 
     @GetMapping("/getByCatName/{catName}")
-    private Iterable<Film> getFilmsByCatName(@PathVariable("catName") String catName){
+    public Iterable<Film> getFilmsByCatName(@PathVariable("catName") String catName){
         return filmRepository.findByCategoryName(catName);
     }
 
     @PutMapping("/update/{id}")
-    private Film updateFilmById(
+    public Film updateFilmById(
             @PathVariable("id") int filmId,
             @RequestBody Film updatedFilm
     ){
-        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
 
         film.setTitle(updatedFilm.getTitle());
         film.setDescription(updatedFilm.getDescription());
@@ -64,12 +70,12 @@ public class FilmController {
     }
 
     @PostMapping("/create")
-    private Film createFilm(@RequestBody Film newFilm){
+    public Film createFilm(@RequestBody Film newFilm){
         return filmRepository.save(newFilm);
     }
 
     @DeleteMapping("/delete/{id}")
-    private void deleteFilmById(@PathVariable("id") int filmId){
+    public void deleteFilmById(@PathVariable("id") int filmId){
         filmRepository.deleteById(filmId);
     }
 }

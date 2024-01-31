@@ -17,9 +17,7 @@ public class Inventory {
     @OneToMany(mappedBy = "rentalInventory")
     private Set<Rental> rentalSet;
 
-    public Inventory(){
-
-    }
+    public Inventory(){}
 
     public int getInventoryId() {
         return inventoryId;

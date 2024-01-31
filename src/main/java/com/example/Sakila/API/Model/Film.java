@@ -38,6 +38,9 @@ public class Film {
     @JsonIgnore
     private Set<Inventory> filmInventory;
 
+    @ManyToMany(mappedBy = "filmsActedIn")
+    private Set<Actor> actors;
+
     public Film() {
     }
 
@@ -109,4 +112,6 @@ public class Film {
     public void setFilmInventory(Set<Inventory> filmInventory) {
         this.filmInventory = filmInventory;
     }
+
+    
 }

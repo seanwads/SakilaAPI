@@ -43,9 +43,16 @@ public class Film {
 
     public Film() {}
 
-    public Film(int filmId, String title) {
+    public Film(int filmId, String title, String description, Year releaseYear, int languageId, String rating, Set<Category> categorySet, Set<Inventory> filmInventory, Set<Actor> actors) {
         this.filmId = filmId;
         this.title = title;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.languageId = languageId;
+        this.rating = rating;
+        this.categorySet = categorySet;
+        this.filmInventory = filmInventory;
+        this.actors = actors;
     }
 
     public int getFilmId() {
@@ -112,5 +119,11 @@ public class Film {
         this.filmInventory = filmInventory;
     }
 
-    
+    public Set<Actor> getActors() {
+        return actors;
+    }
+
+    public void setActors(Set<Actor> actors) {
+        this.actors = actors;
+    }
 }

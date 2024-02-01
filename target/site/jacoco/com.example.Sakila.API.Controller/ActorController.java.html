@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sakila-API</a> &gt; <a href="index.source.html" class="el_package">com.example.Sakila.API.Controller</a> &gt; <span class="el_source">ActorController.java</span></div><h1>ActorController.java</h1><pre class="source lang-java linenums">package com.example.Sakila.API.Controller;
+
+import com.example.Sakila.API.Model.Actor;
+import com.example.Sakila.API.Repository.ActorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
+
+@CrossOrigin
+@RequestMapping(&quot;/actor&quot;)
+@RestController
+public class ActorController {
+
+    private final ActorRepository actorRepository;
+    private static final String notFoundResponse = &quot;Actor not found&quot;;
+
+    @Autowired
+<span class="nc" id="L18">    public ActorController(ActorRepository actorRepository){</span>
+<span class="nc" id="L19">        this.actorRepository = actorRepository;</span>
+<span class="nc" id="L20">    }</span>
+
+    @GetMapping(&quot;/get/{id}&quot;)
+    public Actor getActorById(@PathVariable(&quot;id&quot;) int actorId){
+<span class="nc" id="L24">        return actorRepository.findById(actorId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));</span>
+    }
+
+    @GetMapping(&quot;/getAll&quot;)
+    public Iterable&lt;Actor&gt; getActors(){
+<span class="nc" id="L29">        return actorRepository.findAll();</span>
+    }
+
+    @GetMapping(&quot;/getByFilmId/{id}&quot;)
+    public Iterable&lt;Actor&gt; getActorsByFilmId(@PathVariable(&quot;id&quot;) int filmId){
+<span class="nc" id="L34">        return actorRepository.findByFilmId(filmId);</span>
+    }
+
+    @GetMapping(&quot;/getByFilmTitle/{title}&quot;)
+    public Iterable&lt;Actor&gt; getActorsByFilmTitle(@PathVariable(&quot;title&quot;) String filmTitle){
+<span class="nc" id="L39">        return actorRepository.findByFilmTitle(filmTitle);</span>
+    }
+
+    @PutMapping(&quot;/update/{id}&quot;)
+    public Actor updateActorById(
+            @PathVariable(&quot;id&quot;) int actorId,
+            @RequestBody Actor updatedActor
+    ){
+<span class="nc" id="L47">        Actor actor = actorRepository.findById(actorId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));</span>
+
+<span class="nc" id="L49">        actor.setFirstName(updatedActor.getFirstName());</span>
+<span class="nc" id="L50">        actor.setLastName(updatedActor.getLastName());</span>
+<span class="nc" id="L51">        actor.setFilmsActedIn(updatedActor.getFilmsActedIn());</span>
+
+<span class="nc" id="L53">        return actorRepository.save(actor);</span>
+    }
+
+    @PostMapping(&quot;/create&quot;)
+    public Actor createActor(@RequestBody Actor newActor){
+<span class="nc" id="L58">        return actorRepository.save(newActor);</span>
+    }
+
+    @DeleteMapping(&quot;/delete/{id}&quot;)
+    public void deleteActorById(@PathVariable(&quot;id&quot;) int actorId){
+<span class="nc" id="L63">        actorRepository.deleteById(actorId);</span>
+<span class="nc" id="L64">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

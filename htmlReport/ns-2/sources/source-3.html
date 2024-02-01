@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > FilmController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.Sakila.API.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: FilmController (com.example.Sakila.API.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FilmController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (2/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.8%
+  </span>
+  <span class="absValue">
+    (2/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.Sakila.API.Controller;
+&nbsp;
+&nbsp;import com.example.Sakila.API.Model.Category;
+&nbsp;import com.example.Sakila.API.Model.Film;
+&nbsp;import com.example.Sakila.API.Repository.FilmRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.client.ResourceAccessException;
+&nbsp;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;@CrossOrigin
+&nbsp;@RequestMapping(&quot;/film&quot;)
+&nbsp;@RestController
+<b class="fc">&nbsp;public class FilmController {</b>
+&nbsp;
+&nbsp;    private final FilmRepository filmRepository;
+&nbsp;    private static final String notFoundResponse = &quot;Film not found&quot;;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public FilmController(FilmRepository filmRepository){</b>
+&nbsp;        this.filmRepository = filmRepository;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/get/{id}&quot;)
+<b class="nc">&nbsp;    public Film getFilmById(@PathVariable(&quot;id&quot;) int filmId){</b>
+&nbsp;        return filmRepository.findById(filmId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getAll&quot;)
+<b class="nc">&nbsp;    public Iterable&lt;Film&gt; getAllFilms(){</b>
+<b class="nc">&nbsp;        return filmRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getCategories/{id}&quot;)
+&nbsp;    public Set&lt;Category&gt; getCategoriesByFilm(@PathVariable(&quot;id&quot;) int filmId){
+<b class="nc">&nbsp;        Film film = filmRepository.findById(filmId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));</b>
+&nbsp;        return film.getCategorySet();
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getByTitle/{title}&quot;)
+<b class="nc">&nbsp;    public Iterable&lt;Film&gt; getFilmsByTitle(@PathVariable(&quot;title&quot;) String titleInput){</b>
+&nbsp;        return filmRepository.findByTitleContains(titleInput);
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getByCatId/{id}&quot;)
+<b class="nc">&nbsp;    public Iterable&lt;Film&gt; getFilmsByCatId(@PathVariable(&quot;id&quot;) int catId){</b>
+&nbsp;        return filmRepository.findByCategoryId(catId);
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getByCatName/{catName}&quot;)
+&nbsp;    public Iterable&lt;Film&gt; getFilmsByCatName(@PathVariable(&quot;catName&quot;) String catName){
+&nbsp;        return filmRepository.findByCategoryName(catName);
+&nbsp;    }
+<b class="nc">&nbsp;</b>
+&nbsp;    @PutMapping(&quot;/update/{id}&quot;)
+<b class="nc">&nbsp;    public Film updateFilmById(</b>
+<b class="nc">&nbsp;            @PathVariable(&quot;id&quot;) int filmId,</b>
+<b class="nc">&nbsp;            @RequestBody Film updatedFilm</b>
+<b class="nc">&nbsp;    ){</b>
+<b class="nc">&nbsp;        Film film = filmRepository.findById(filmId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));</b>
+&nbsp;
+<b class="nc">&nbsp;        film.setTitle(updatedFilm.getTitle());</b>
+&nbsp;        film.setDescription(updatedFilm.getDescription());
+&nbsp;        film.setRating(updatedFilm.getRating());
+&nbsp;        film.setLanguageId(updatedFilm.getLanguageId());
+&nbsp;        film.setCategorySet(updatedFilm.getCategorySet());
+<b class="nc">&nbsp;</b>
+&nbsp;        return filmRepository.save(film);
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/create&quot;)
+<b class="nc">&nbsp;    public Film createFilm(@RequestBody Film newFilm){</b>
+&nbsp;        return filmRepository.save(newFilm);
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/delete/{id}&quot;)
+&nbsp;    public void deleteFilmById(@PathVariable(&quot;id&quot;) int filmId){
+&nbsp;        filmRepository.deleteById(filmId);
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-01-31 16:26</div>
+</div>
+</body>
+</html>

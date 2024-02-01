@@ -26,6 +26,13 @@ public class Category {
     @ManyToMany(mappedBy = "categorySet")
     Set<Film> filmSet;
 
+    public Category(){}
+
+    public Category(int categoryId, String name) {
+        this.categoryId = categoryId;
+        this.name = name;
+    }
+
     public int getCategoryId() {
         return categoryId;
     }

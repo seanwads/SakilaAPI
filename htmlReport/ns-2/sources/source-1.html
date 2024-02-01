@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ActorController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.Sakila.API.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: ActorController (com.example.Sakila.API.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ActorController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.Sakila.API.Controller;
+&nbsp;
+&nbsp;import com.example.Sakila.API.Model.Actor;
+&nbsp;import com.example.Sakila.API.Repository.ActorRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.client.ResourceAccessException;
+&nbsp;
+&nbsp;@CrossOrigin
+&nbsp;@RequestMapping(&quot;/actor&quot;)
+&nbsp;@RestController
+<b class="nc">&nbsp;public class ActorController {</b>
+&nbsp;
+&nbsp;    private final ActorRepository actorRepository;
+&nbsp;    private static final String notFoundResponse = &quot;Actor not found&quot;;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    public ActorController(ActorRepository actorRepository){
+<b class="nc">&nbsp;        this.actorRepository = actorRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/get/{id}&quot;)
+&nbsp;    public Actor getActorById(@PathVariable(&quot;id&quot;) int actorId){
+<b class="nc">&nbsp;        return actorRepository.findById(actorId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getAll&quot;)
+&nbsp;    public Iterable&lt;Actor&gt; getActors(){
+<b class="nc">&nbsp;        return actorRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getByFilmId/{id}&quot;)
+&nbsp;    public Iterable&lt;Actor&gt; getActorsByFilmId(@PathVariable(&quot;id&quot;) int filmId){
+<b class="nc">&nbsp;        return actorRepository.findByFilmId(filmId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/getByFilmTitle/{title}&quot;)
+&nbsp;    public Iterable&lt;Actor&gt; getActorsByFilmTitle(@PathVariable(&quot;title&quot;) String filmTitle){
+&nbsp;        return actorRepository.findByFilmTitle(filmTitle);
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    @PutMapping(&quot;/update/{id}&quot;)</b>
+&nbsp;    public Actor updateActorById(
+<b class="nc">&nbsp;            @PathVariable(&quot;id&quot;) int actorId,</b>
+<b class="nc">&nbsp;            @RequestBody Actor updatedActor</b>
+<b class="nc">&nbsp;    ){</b>
+&nbsp;        Actor actor = actorRepository.findById(actorId).orElseThrow(() -&gt; new ResourceAccessException(notFoundResponse));
+<b class="nc">&nbsp;</b>
+&nbsp;        actor.setFirstName(updatedActor.getFirstName());
+&nbsp;        actor.setLastName(updatedActor.getLastName());
+&nbsp;        actor.setFilmsActedIn(updatedActor.getFilmsActedIn());
+&nbsp;
+<b class="nc">&nbsp;        return actorRepository.save(actor);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/create&quot;)
+&nbsp;    public Actor createActor(@RequestBody Actor newActor){
+<b class="nc">&nbsp;        return actorRepository.save(newActor);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/delete/{id}&quot;)
+&nbsp;    public void deleteActorById(@PathVariable(&quot;id&quot;) int actorId){
+&nbsp;        actorRepository.deleteById(actorId);
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-01-31 16:26</div>
+</div>
+</body>
+</html>

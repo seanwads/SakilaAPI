@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Film.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sakila-API</a> &gt; <a href="index.source.html" class="el_package">com.example.Sakila.API.Model</a> &gt; <span class="el_source">Film.java</span></div><h1>Film.java</h1><pre class="source lang-java linenums">package com.example.Sakila.API.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import java.time.Year;
+import java.util.Set;
+
+@Entity
+@Table(name = &quot;film&quot;)
+public class Film {
+    @Id
+    @Column(name = &quot;film_id&quot;)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int filmId;
+
+    @Column(name = &quot;title&quot;)
+    private String title;
+
+    @Column(name = &quot;description&quot;)
+    private String description;
+
+    @Column(name = &quot;release_year&quot;)
+    private Year releaseYear;
+
+    @Column(name = &quot;language_id&quot;)
+    private int languageId;
+
+    @Column(name = &quot;rating&quot;)
+    private String rating;
+
+    @ManyToMany
+    @JoinTable(
+            name = &quot;film_category&quot;,
+            joinColumns = @JoinColumn(name = &quot;film_id&quot;),
+            inverseJoinColumns = @JoinColumn(name = &quot;category_id&quot;))
+    Set&lt;Category&gt; categorySet;
+
+    @OneToMany(mappedBy = &quot;inventoryFilm&quot;)
+    @JsonIgnore
+    private Set&lt;Inventory&gt; filmInventory;
+
+    @ManyToMany(mappedBy = &quot;filmsActedIn&quot;)
+    private Set&lt;Actor&gt; actors;
+
+<span class="nc" id="L44">    public Film() {}</span>
+
+<span class="fc" id="L46">    public Film(int filmId, String title, String description, Year releaseYear, int languageId, String rating, Set&lt;Category&gt; categorySet, Set&lt;Inventory&gt; filmInventory, Set&lt;Actor&gt; actors) {</span>
+<span class="fc" id="L47">        this.filmId = filmId;</span>
+<span class="fc" id="L48">        this.title = title;</span>
+<span class="fc" id="L49">        this.description = description;</span>
+<span class="fc" id="L50">        this.releaseYear = releaseYear;</span>
+<span class="fc" id="L51">        this.languageId = languageId;</span>
+<span class="fc" id="L52">        this.rating = rating;</span>
+<span class="fc" id="L53">        this.categorySet = categorySet;</span>
+<span class="fc" id="L54">        this.filmInventory = filmInventory;</span>
+<span class="fc" id="L55">        this.actors = actors;</span>
+<span class="fc" id="L56">    }</span>
+
+    public int getFilmId() {
+<span class="fc" id="L59">        return filmId;</span>
+    }
+
+    public void setFilmId(int filmId) {
+<span class="nc" id="L63">        this.filmId = filmId;</span>
+<span class="nc" id="L64">    }</span>
+
+    public String getTitle() {
+<span class="fc" id="L67">        return title;</span>
+    }
+
+    public void setTitle(String title) {
+<span class="nc" id="L71">        this.title = title;</span>
+<span class="nc" id="L72">    }</span>
+
+    public String getDescription() {
+<span class="fc" id="L75">        return description;</span>
+    }
+
+    public void setDescription(String description) {
+<span class="nc" id="L79">        this.description = description;</span>
+<span class="nc" id="L80">    }</span>
+
+    public Year getReleaseYear() {
+<span class="fc" id="L83">        return releaseYear;</span>
+    }
+
+    public void setReleaseYear(Year releaseYear) {
+<span class="nc" id="L87">        this.releaseYear = releaseYear;</span>
+<span class="nc" id="L88">    }</span>
+
+    public int getLanguageId() {
+<span class="fc" id="L91">        return languageId;</span>
+    }
+
+    public void setLanguageId(int languageId) {
+<span class="nc" id="L95">        this.languageId = languageId;</span>
+<span class="nc" id="L96">    }</span>
+
+    public String getRating() {
+<span class="fc" id="L99">        return rating;</span>
+    }
+
+    public void setRating(String rating) {
+<span class="nc" id="L103">        this.rating = rating;</span>
+<span class="nc" id="L104">    }</span>
+
+    public Set&lt;Category&gt; getCategorySet() {
+<span class="fc" id="L107">        return categorySet;</span>
+    }
+
+    public void setCategorySet(Set&lt;Category&gt; categorySet) {
+<span class="nc" id="L111">        this.categorySet = categorySet;</span>
+<span class="nc" id="L112">    }</span>
+
+    public Set&lt;Inventory&gt; getFilmInventory() {
+<span class="nc" id="L115">        return filmInventory;</span>
+    }
+
+    public void setFilmInventory(Set&lt;Inventory&gt; filmInventory) {
+<span class="nc" id="L119">        this.filmInventory = filmInventory;</span>
+<span class="nc" id="L120">    }</span>
+
+    public Set&lt;Actor&gt; getActors() {
+<span class="fc" id="L123">        return actors;</span>
+    }
+
+    public void setActors(Set&lt;Actor&gt; actors) {
+<span class="nc" id="L127">        this.actors = actors;</span>
+<span class="nc" id="L128">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

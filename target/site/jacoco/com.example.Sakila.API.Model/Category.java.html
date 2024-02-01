@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Category.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sakila-API</a> &gt; <a href="index.source.html" class="el_package">com.example.Sakila.API.Model</a> &gt; <span class="el_source">Category.java</span></div><h1>Category.java</h1><pre class="source lang-java linenums">package com.example.Sakila.API.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name = &quot;category&quot;)
+public class Category {
+    @Id
+    @Column(name = &quot;category_id&quot;)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int categoryId;
+
+    @Column(name = &quot;name&quot;)
+    private String name;
+
+    public Set&lt;Film&gt; getFilmSet() {
+<span class="nc" id="L18">        return filmSet;</span>
+    }
+
+    public void setFilmSet(Set&lt;Film&gt; filmSet) {
+<span class="nc" id="L22">        this.filmSet = filmSet;</span>
+<span class="nc" id="L23">    }</span>
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = &quot;categorySet&quot;)
+    Set&lt;Film&gt; filmSet;
+
+<span class="nc" id="L29">    public Category(){}</span>
+
+<span class="fc" id="L31">    public Category(int categoryId, String name) {</span>
+<span class="fc" id="L32">        this.categoryId = categoryId;</span>
+<span class="fc" id="L33">        this.name = name;</span>
+<span class="fc" id="L34">    }</span>
+
+    public int getCategoryId() {
+<span class="fc" id="L37">        return categoryId;</span>
+    }
+
+    public void setCategoryId(int categoryId) {
+<span class="nc" id="L41">        this.categoryId = categoryId;</span>
+<span class="nc" id="L42">    }</span>
+
+    public String getName() {
+<span class="fc" id="L45">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="nc" id="L49">        this.name = name;</span>
+<span class="nc" id="L50">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

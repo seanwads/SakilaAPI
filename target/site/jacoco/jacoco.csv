@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Sakila-API,com.example.Sakila.API,SakilaApiApplication,5,3,0,0,2,1,1,1,1,1
+Sakila-API,com.example.Sakila.API.Controller,CategoryController,80,0,0,0,13,0,10,0,10,0
+Sakila-API,com.example.Sakila.API.Controller,ActorController,78,0,0,0,15,0,10,0,10,0
+Sakila-API,com.example.Sakila.API.Controller,UserController,114,0,2,0,21,0,11,0,10,0
+Sakila-API,com.example.Sakila.API.Controller,FilmController,77,31,0,0,13,7,9,4,9,4
+Sakila-API,com.example.Sakila.API.Model,User,45,0,0,0,19,0,13,0,13,0
+Sakila-API,com.example.Sakila.API.Model,Film,42,54,0,0,20,19,11,9,11,9
+Sakila-API,com.example.Sakila.API.Model,Inventory,17,0,0,0,7,0,5,0,5,0
+Sakila-API,com.example.Sakila.API.Model,Category,18,15,0,0,8,6,5,3,5,3
+Sakila-API,com.example.Sakila.API.Model,Actor,22,21,0,0,10,8,6,4,6,4
+Sakila-API,com.example.Sakila.API.Model,Rental,31,0,0,0,13,0,9,0,9,0

@@ -18,6 +18,7 @@ import java.util.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = FilmController.class)
@@ -36,8 +37,8 @@ class FilmControllerTests {
 
     @BeforeAll
     static void setTestData(){
-        action = new Category(1,"Action");
-        horror = new Category(1, "Horror");
+        action = new Category("Action");
+        horror = new Category("Horror");
         john = new Actor(1,"John", "Doe");
         jane = new Actor(2, "Jane", "Doe");
 
@@ -65,7 +66,7 @@ class FilmControllerTests {
 
         testData.add(new Film(
                 3,
-                "Film 3",
+                "Movie 3",
                 "test film",
                 Year.now(),
                 1,
@@ -116,4 +117,82 @@ class FilmControllerTests {
                 .andExpect(jsonPath("$..categoryId").value(action.getCategoryId()))
                 .andExpect(jsonPath("$..name").value(action.getName()));
     }
+
+    @Test
+    void getByTitleTest() throws Exception {
+        String testTitle = "Film";
+
+        List<Film> filmList = new ArrayList<>();
+        for(Film film : testData){
+            if(film.getTitle().contains(testTitle)){
+                filmList.add(film);
+            }
+        }
+
+        when(filmRepository.findByTitleContains(testTitle)).thenReturn(filmList);
+
+        mockMvc.perform(get("/film/getByTitle/" + testTitle).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(filmList.size())))
+                .andExpect(jsonPath("$[0].title").value(testData.get(0).getTitle()))
+                .andExpect(jsonPath("$[1].title").value(testData.get(1).getTitle()));
+    }
+
+    @Test
+    void getByCatIdTest() throws Exception {
+        int catId = action.getCategoryId();
+
+        List<Film> filmList = new ArrayList<>();
+        for(Film film : testData){
+            if(film.getCategorySet().contains(action)){
+                filmList.add(film);
+            }
+        }
+
+        when(filmRepository.findByCategoryId(catId)).thenReturn(filmList);
+
+        mockMvc.perform(get("/film/getByCatId/" + catId).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(filmList.size())))
+                .andExpect(jsonPath("$[0].title").value(testData.get(0).getTitle()))
+                .andExpect(jsonPath("$[1].title").value(testData.get(1).getTitle()));
+    }
+
+    @Test
+    void getByCatName() throws Exception {
+        String catName = horror.getName();
+
+        List<Film> filmList = new ArrayList<>();
+        for(Film film : testData){
+            if(film.getCategorySet().contains(horror)){
+                filmList.add(film);
+            }
+        }
+
+        when(filmRepository.findByCategoryName(catName)).thenReturn(filmList);
+
+        mockMvc.perform(get("/film/getByCatName/" + catName).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(filmList.size())))
+                .andExpect(jsonPath("$[0].title").value(testData.get(1).getTitle()))
+                .andExpect(jsonPath("$[1].title").value(testData.get(2).getTitle()));
+    }
+
+//    @Test
+//    void updateFilmByIdTest() throws Exception {
+//        int testIndex = 0;
+//        String updatedDesc = "updated description";
+//        Film updatedFilm = testData.get(testIndex);
+//        updatedFilm.setDescription(updatedDesc);
+//
+//        when(filmRepository.findById(testIndex+1)).thenReturn(Optional.of(testData.get(testIndex)));
+//        when(filmRepository.save(testData.get(testIndex))).thenReturn(testData.get(testIndex));
+//
+//        mockMvc.perform(put("/update/" + 1)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content("{film}")
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("&.filmId").value(testData.get(testIndex).getFilmId()))
+//                .andExpect(jsonPath("&.description").value(updatedDesc));
+//    }
 }

@@ -43,6 +43,12 @@ public class FilmController {
         return filmRepository.findByTitleContains(titleInput);
     }
 
+    @GetMapping("/getIdByTitle/{title}")
+    public Integer getFilmIdByTitle(@PathVariable("title") String titleInput){
+        Film film = filmRepository.findByTitleEquals(titleInput).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+        return film.getFilmId();
+    }
+
     @GetMapping("/getByCatId/{id}")
     public Iterable<Film> getFilmsByCatId(@PathVariable("id") int catId){
         return filmRepository.findByCategoryId(catId);

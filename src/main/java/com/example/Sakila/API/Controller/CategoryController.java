@@ -48,8 +48,14 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public Category createCat(@RequestBody Category newCat){
-        return catRepository.save(newCat);
+    public Category createCat(@RequestBody Category newCat)
+    {
+        if(catRepository.findByName(newCat.getName()).isEmpty()){
+            return catRepository.save(newCat);
+        }
+        else {
+            throw new IllegalArgumentException("Film already exists");
+        }
     }
 
     @DeleteMapping("/delete/{id}")

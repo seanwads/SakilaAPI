@@ -27,6 +27,11 @@ public class CategoryController {
         return catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
     }
 
+    @GetMapping("/getByName/{name}")
+    public Category getCatByName(@PathVariable("name") String name){
+        return catRepository.findByName(name).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+    }
+
     @GetMapping("/getAll")
     public Iterable<Category> getAllCats(){
         return catRepository.findAll();

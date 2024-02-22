@@ -59,6 +59,11 @@ public class FilmController {
         return filmRepository.findByCategoryName(catName);
     }
 
+    @GetMapping("/getByActorId/{id}")
+    public Iterable<Film> getFilmsByActorId(@PathVariable("id") int actorId){
+        return filmRepository.findByActorId(actorId);
+    }
+
     @PutMapping("/update/{id}")
     public Film updateFilmById(
             @PathVariable("id") int filmId,

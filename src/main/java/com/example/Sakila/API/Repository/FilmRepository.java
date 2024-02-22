@@ -18,4 +18,7 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
 
     @Query("SELECT film FROM Film film WHERE film.title = :titleInput")
     Optional<Film> findByTitleEquals(@Param("titleInput") String titleInput);
+
+    @Query("SELECT film FROM Film film JOIN film.actors actor WHERE actor.actorId = :id")
+    Iterable<Film> findByActorId(@Param("id") int id);
 }

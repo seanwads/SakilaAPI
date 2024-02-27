@@ -1,6 +1,7 @@
 package com.example.Sakila.API.Controller;
 
 import com.example.Sakila.API.Model.Actor;
+import com.example.Sakila.API.Model.Film;
 import com.example.Sakila.API.Repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,11 @@ public class ActorController {
     @GetMapping("/getByFilmTitle/{title}")
     public Iterable<Actor> getActorsByFilmTitle(@PathVariable("title") String filmTitle){
         return actorRepository.findByFilmTitle(filmTitle);
+    }
+
+    @GetMapping("/getByNameContains/{nameInput}")
+    public Iterable<Actor> getActorsByNameContains(@PathVariable("nameInput") String nameInput){
+        return actorRepository.findByNameContains(nameInput);
     }
 
     @PutMapping("/update/{id}")

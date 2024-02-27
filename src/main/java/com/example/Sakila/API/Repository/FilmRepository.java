@@ -21,4 +21,7 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
 
     @Query("SELECT film FROM Film film JOIN film.actors actor WHERE actor.actorId = :id")
     Iterable<Film> findByActorId(@Param("id") int id);
+
+    @Query("SELECT film FROM Film film WHERE film.rating = :rat")
+    Iterable<Film> findByRating(@Param("rat") String rat);
 }

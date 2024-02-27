@@ -24,4 +24,7 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
 
     @Query("SELECT film FROM Film film WHERE film.rating = :rat")
     Iterable<Film> findByRating(@Param("rat") String rat);
+
+    @Query("SELECT film FROM Film film JOIN film.categorySet cat WHERE cat.categoryId = :catId AND film.rating = :rat")
+    Iterable<Film> findByCatAndRat(@Param("catId") int catId, @Param("rat") String rat);
 }

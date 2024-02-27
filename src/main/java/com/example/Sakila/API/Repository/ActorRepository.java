@@ -11,6 +11,6 @@ public interface ActorRepository extends JpaRepository<Actor, Integer> {
     @Query("SELECT actor FROM Actor actor INNER JOIN actor.filmsActedIn films WHERE films.title LIKE CONCAT('%', :filmTitle, '%')")
     Iterable<Actor> findByFilmTitle(@Param("filmTitle") String filmTitle);
 
-    @Query("SELECT actor FROM Actor actor WHERE CONCAT(actor.firstName, ' ', actor.lastName) LIKE CONCAT('%', UPPER(:nameInput), '%' ")
+    @Query("SELECT actor FROM Actor actor WHERE CONCAT(actor.firstName, ' ', actor.lastName) LIKE CONCAT('%', UPPER(:nameInput), '%') ")
     Iterable<Actor> findByNameContains(@Param("nameInput") String nameInput);
 }

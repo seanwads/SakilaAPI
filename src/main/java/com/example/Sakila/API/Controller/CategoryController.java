@@ -1,7 +1,6 @@
 package com.example.Sakila.API.Controller;
 
 import com.example.Sakila.API.Model.Category;
-import com.example.Sakila.API.Model.Film;
 import com.example.Sakila.API.Repository.CatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,12 +34,6 @@ public class CategoryController {
     @GetMapping("/getAll")
     public Iterable<Category> getAllCats(){
         return catRepository.findAll();
-    }
-
-    @GetMapping("/getFilmsByCat/{id}")
-    public List<Film> getFilmsByCat(@PathVariable("id") int catId){
-        Category cat = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
-        return new ArrayList<>(cat.getFilmSet());
     }
 
     @PutMapping("/update/{id}")

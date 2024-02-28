@@ -35,10 +35,6 @@ public class ActorController {
         return actorRepository.findByFilmId(filmId);
     }
 
-    @GetMapping("/getByFilmTitle/{title}")
-    public Iterable<Actor> getActorsByFilmTitle(@PathVariable("title") String filmTitle){
-        return actorRepository.findByFilmTitle(filmTitle);
-    }
 
     @GetMapping("/getByNameContains/{nameInput}")
     public Iterable<Actor> getActorsByNameContains(@PathVariable("nameInput") String nameInput){

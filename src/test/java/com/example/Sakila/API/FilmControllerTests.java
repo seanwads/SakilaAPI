@@ -5,6 +5,7 @@ import com.example.Sakila.API.Model.Actor;
 import com.example.Sakila.API.Model.Category;
 import com.example.Sakila.API.Model.Film;
 import com.example.Sakila.API.Repository.FilmRepository;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,11 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = FilmController.class)
 class FilmControllerTests {
@@ -48,7 +53,7 @@ class FilmControllerTests {
                 "test film",
                 Year.now(),
                 1,
-                "PG-13",
+                "PG13",
                 Set.of(action),
                 null,
                 Set.of(john)));
@@ -59,7 +64,7 @@ class FilmControllerTests {
                 "test film",
                 Year.now(),
                 1,
-                "PG-13",
+                "G",
                 Set.of(action, horror),
                 null,
                 Set.of(john, jane)));
@@ -70,7 +75,7 @@ class FilmControllerTests {
                 "test film",
                 Year.now(),
                 1,
-                "PG-13",
+                "NC17",
                 Set.of(horror),
                 null,
                 Set.of(jane)));
@@ -159,40 +164,116 @@ class FilmControllerTests {
     }
 
     @Test
-    void getByCatName() throws Exception {
-        String catName = horror.getName();
+    void getByActorIdTest() throws Exception {
+        int actorId = john.getActorId();
 
         List<Film> filmList = new ArrayList<>();
         for(Film film : testData){
-            if(film.getCategorySet().contains(horror)){
+            if(film.getActors().contains(john)){
                 filmList.add(film);
             }
         }
 
-        when(filmRepository.findByCategoryName(catName)).thenReturn(filmList);
+        when(filmRepository.findByActorId(actorId)).thenReturn(filmList);
 
-        mockMvc.perform(get("/film/getByCatName/" + catName).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/film/getByActorId/" + actorId).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(filmList.size())))
-                .andExpect(jsonPath("$[0].title").value(testData.get(1).getTitle()))
-                .andExpect(jsonPath("$[1].title").value(testData.get(2).getTitle()));
+                .andExpect(jsonPath("$[0].title").value(testData.get(0).getTitle()))
+                .andExpect(jsonPath("$[1].title").value(testData.get(1).getTitle()));
     }
 
-//    @Test
-//    void updateFilmByIdTest() throws Exception {
-//        int testIndex = 0;
-//        String updatedDesc = "updated description";
-//        Film updatedFilm = testData.get(testIndex);
-//        updatedFilm.setDescription(updatedDesc);
-//
-//        when(filmRepository.findById(testIndex+1)).thenReturn(Optional.of(testData.get(testIndex)));
-//        when(filmRepository.save(testData.get(testIndex))).thenReturn(testData.get(testIndex));
-//
-//        mockMvc.perform(put("/update/" + 1)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content("{film}")
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("&.filmId").value(testData.get(testIndex).getFilmId()))
-//                .andExpect(jsonPath("&.description").value(updatedDesc));
-//    }
+    @Test
+    void getByRatingTest() throws Exception {
+        String rating = testData.get(0).getRating();
+
+        List<Film> filmList = new ArrayList<>();
+        for(Film film : testData){
+            if(film.getRating().equals(rating)){
+                filmList.add(film);
+            }
+        }
+
+        when(filmRepository.findByRating(rating)).thenReturn(filmList);
+
+        mockMvc.perform(get("/film/getByRating/" + rating).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(filmList.size())))
+                .andExpect(jsonPath("$[0].title").value(testData.get(0).getTitle()));
+    }
+
+    @Test
+    void getByCatAndRatTest() throws Exception {
+        String rating = testData.get(1).getRating();
+        int catId = action.getCategoryId();
+
+        List<Film> filmList = new ArrayList<>();
+        for(Film film : testData){
+            if(film.getCategorySet().contains(action) && film.getRating().equals(rating)){
+                filmList.add(film);
+            }
+        }
+
+        when(filmRepository.findByCatAndRat(catId, rating)).thenReturn(filmList);
+
+        mockMvc.perform(get("/film/getByCatAndRat/" + catId + "/" + rating).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(filmList.size())))
+                .andExpect(jsonPath("$[0].title").value(testData.get(1).getTitle()));
+    }
+
+    @Test
+    void updateFilmByIdTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        int testIndex = 0;
+        String updatedDesc = "updated description";
+        Film updatedFilm = testData.get(testIndex);
+        updatedFilm.setDescription(updatedDesc);
+        String updatedFilmBody = mapper.writeValueAsString(updatedFilm);
+
+        when(filmRepository.findById(testIndex+1)).thenReturn(Optional.of(testData.get(testIndex)));
+        when(filmRepository.save(updatedFilm)).thenReturn(updatedFilm);
+
+        mockMvc.perform(put("/film/update/" + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedFilmBody)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.filmId").value(testData.get(testIndex).getFilmId()))
+                .andExpect(jsonPath("$.description").value(updatedDesc));
+    }
+
+    @Test
+    void createFilmTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Film filmToCreate = new Film(
+                4,
+                "Movie 4",
+                "test film",
+                Year.now(),
+                1,
+                "G",
+                Set.of(action),
+                null,
+                Set.of(jane));
+
+        String filmBody = mapper.writeValueAsString(filmToCreate);
+
+        when(filmRepository.save(filmToCreate)).thenReturn(filmToCreate);
+
+        mockMvc.perform(post("/film/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(filmBody)
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteFilmTest() throws Exception {
+        int id = 1;
+        mockMvc.perform(delete("/film/delete/" + id)).andExpect(status().isOk());
+    }
 }

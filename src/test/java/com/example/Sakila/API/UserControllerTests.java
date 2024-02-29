@@ -5,6 +5,7 @@ import com.example.Sakila.API.Model.Film;
 import com.example.Sakila.API.Model.Inventory;
 import com.example.Sakila.API.Model.Rental;
 import com.example.Sakila.API.Model.User;
+import com.example.Sakila.API.Repository.FilmRepository;
 import com.example.Sakila.API.Repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,6 +38,9 @@ public class UserControllerTests {
 
     @MockBean
     UserRepository userRepository;
+
+    @MockBean
+    FilmRepository filmRepository;
 
     static List<User> users = new ArrayList<>();
 

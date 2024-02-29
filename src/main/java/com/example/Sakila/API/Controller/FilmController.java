@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @CrossOrigin
@@ -94,13 +95,13 @@ public class FilmController {
         Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         Actor actorToAdd = actorRepository.findById(actorId).orElseThrow(() -> new ResourceAccessException("Actor not found"));
 
-        Set<Actor> actorSet = film.getActors();
+        Set<Actor> actorSet = new HashSet<>(film.getActors());
 
         if(!actorSet.contains(actorToAdd)){
             actorSet.add(actorToAdd);
             film.setActors(actorSet);
 
-            Set<Film> filmSet = actorToAdd.getFilmsActedIn();
+            Set<Film> filmSet = new HashSet<>(actorToAdd.getFilmsActedIn());
             filmSet.add(film);
             actorToAdd.setFilmsActedIn(filmSet);
             actorRepository.save(actorToAdd);
@@ -115,11 +116,11 @@ public class FilmController {
         Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         Actor actorToRemove = actorRepository.findById(actorId).orElseThrow(() -> new ResourceAccessException("Actor not found"));
 
-        Set<Actor> actorSet = film.getActors();
+        Set<Actor> actorSet = new HashSet<>(film.getActors());
         actorSet.remove(actorToRemove);
         film.setActors(actorSet);
 
-        Set<Film> filmSet = actorToRemove.getFilmsActedIn();
+        Set<Film> filmSet = new HashSet<>(actorToRemove.getFilmsActedIn());
         filmSet.remove(film);
         actorToRemove.setFilmsActedIn(filmSet);
         actorRepository.save(actorToRemove);
@@ -133,13 +134,13 @@ public class FilmController {
         Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         Category catToAdd = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
 
-        Set<Category> catSet = film.getCategorySet();
+        Set<Category> catSet = new HashSet<>(film.getCategorySet());
 
         if(!catSet.contains(catToAdd)){
             catSet.add(catToAdd);
             film.setCategorySet(catSet);
 
-            Set<Film> filmSet = catToAdd.getFilmSet();
+            Set<Film> filmSet = new HashSet<>(catToAdd.getFilmSet());
             filmSet.add(film);
             catToAdd.setFilmSet(filmSet);
             catRepository.save(catToAdd);
@@ -154,11 +155,11 @@ public class FilmController {
         Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
         Category catToRemove = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
 
-        Set<Category> catSet = film.getCategorySet();
+        Set<Category> catSet = new HashSet<>(film.getCategorySet());
         catSet.remove(catToRemove);
         film.setCategorySet(catSet);
 
-        Set<Film> filmSet = catToRemove.getFilmSet();
+        Set<Film> filmSet = new HashSet<>(catToRemove.getFilmSet());
         filmSet.remove(film);
         catToRemove.setFilmSet(filmSet);
         catRepository.save(catToRemove);

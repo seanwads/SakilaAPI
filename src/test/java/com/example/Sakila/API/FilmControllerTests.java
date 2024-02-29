@@ -9,6 +9,7 @@ import com.example.Sakila.API.Repository.CatRepository;
 import com.example.Sakila.API.Repository.FilmRepository;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Year;
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.not;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,8 +50,8 @@ class FilmControllerTests {
     static Actor john;
     static Actor jane;
 
-    @BeforeAll
-    static void setTestData(){
+    @BeforeEach
+    void setTestData(){
         action = new Category("Action");
         horror = new Category("Horror");
         john = new Actor(1,"John", "Doe");
@@ -87,6 +89,11 @@ class FilmControllerTests {
                 Set.of(horror),
                 null,
                 Set.of(jane)));
+
+        john.setFilmsActedIn(Set.of(testData.get(0), testData.get(1)));
+        jane.setFilmsActedIn(Set.of(testData.get(1), testData.get(2)));
+        action.setFilmSet(Set.of(testData.get(0), testData.get(1)));
+        horror.setFilmSet(Set.of(testData.get(1), testData.get(2)));
     }
 
 
@@ -250,6 +257,66 @@ class FilmControllerTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.filmId").value(testData.get(testIndex).getFilmId()))
                 .andExpect(jsonPath("$.description").value(updatedDesc));
+    }
+
+    @Test
+    void addActorByIdTest() throws Exception {
+        int filmId = testData.get(2).getFilmId();
+        int actorId = john.getActorId();
+
+        when(filmRepository.findById(filmId)).thenReturn(Optional.ofNullable(testData.get(2)));
+        when(actorRepository.findById(actorId)).thenReturn(Optional.of(john));
+        when(actorRepository.save(john)).thenReturn(john);
+        when(filmRepository.save(testData.get(2))).thenReturn(testData.get(2));
+
+        mockMvc.perform(put("/film/addActor/" + filmId +"/" + actorId).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.filmId").value(filmId))
+                .andExpect(jsonPath("$.actors[-1:].actorId").value(actorId));
+    }
+
+    @Test
+    void removeActorByIdTest() throws Exception {
+        int filmId = testData.get(0).getFilmId();
+        int actorId = john.getActorId();
+
+        when(filmRepository.findById(filmId)).thenReturn(Optional.ofNullable(testData.get(0)));
+        when(actorRepository.findById(actorId)).thenReturn(Optional.of(john));
+        when(actorRepository.save(john)).thenReturn(john);
+        when(filmRepository.save(testData.get(0))).thenReturn(testData.get(0));
+
+        mockMvc.perform(put("/film/removeActor/" + filmId +"/" + actorId).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.filmId").value(filmId))
+                .andExpect(jsonPath("$.actors", hasSize(0)));
+    }
+
+    @Test
+    void addCatById() throws Exception{
+        int filmId = testData.get(0).getFilmId();
+        int catId = horror.getCategoryId();
+
+        when(filmRepository.findById(filmId)).thenReturn(Optional.ofNullable(testData.get(0)));
+        when(catRepository.findById(catId)).thenReturn(Optional.of(horror));
+        when(catRepository.save(horror)).thenReturn(horror);
+        when(filmRepository.save(testData.get(0))).thenReturn(testData.get(0));
+
+        mockMvc.perform(put("/film/addCat/" + filmId +"/" + catId).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.filmId").value(filmId))
+                .andExpect(jsonPath("$.categorySet[-1:].categoryId").value(catId));
+    }
+
+    @Test
+    void removeCatById() throws Exception{
+        int filmId = testData.get(2).getFilmId();
+        int catId = horror.getCategoryId();
+
+        when(filmRepository.findById(filmId)).thenReturn(Optional.ofNullable(testData.get(2)));
+        when(catRepository.findById(catId)).thenReturn(Optional.of(horror));
+        when(catRepository.save(horror)).thenReturn(horror);
+        when(filmRepository.save(testData.get(2))).thenReturn(testData.get(2));
+
+        mockMvc.perform(put("/film/removeCat/" + filmId +"/" + catId).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.filmId").value(filmId))
+                .andExpect(jsonPath("$.categorySet", hasSize(0)));
     }
 
     @Test

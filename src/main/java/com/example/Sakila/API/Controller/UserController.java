@@ -92,6 +92,26 @@ public class UserController {
         return userRepository.save(user);
     }
 
+    @PutMapping("/removeFilm/{userId}/{filmId}")
+    public User removeFilmFromUser(@PathVariable("userId") int userId, @PathVariable("filmId") int filmId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
+
+        Rental rentalToDelete = null;
+
+        for(Rental rental : user.getRentalSet()){
+            if(rental.getRentalInventory().getInventoryFilm().getFilmId() == filmId){
+                rentalToDelete = rental;
+            }
+        }
+
+        Set<Rental> userFilms = new HashSet<>(user.getRentalSet());
+        userFilms.remove(rentalToDelete);
+        user.setRentalSet(userFilms);
+
+        return userRepository.save(user);
+    }
+
     @PostMapping("/create")
     public User createUser(@RequestBody User newUser){
         return userRepository.save(newUser);

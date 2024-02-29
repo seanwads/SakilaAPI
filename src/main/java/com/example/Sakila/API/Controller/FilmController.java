@@ -1,7 +1,10 @@
 package com.example.Sakila.API.Controller;
 
+import com.example.Sakila.API.Model.Actor;
 import com.example.Sakila.API.Model.Category;
 import com.example.Sakila.API.Model.Film;
+import com.example.Sakila.API.Repository.ActorRepository;
+import com.example.Sakila.API.Repository.CatRepository;
 import com.example.Sakila.API.Repository.FilmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +18,15 @@ import java.util.Set;
 public class FilmController {
 
     private final FilmRepository filmRepository;
+    private final ActorRepository actorRepository;
+    private final CatRepository catRepository;
     private static final String notFoundResponse = "Film not found";
 
     @Autowired
-    public FilmController(FilmRepository filmRepository){
+    public FilmController(FilmRepository filmRepository, ActorRepository actorRepository, CatRepository catRepository){
         this.filmRepository = filmRepository;
+        this.actorRepository = actorRepository;
+        this.catRepository = catRepository;
     }
 
     @GetMapping("/get/{id}")
@@ -59,7 +66,8 @@ public class FilmController {
     }
 
     @GetMapping("/getByCatAndRat/{catId}/{rating}")
-    public Iterable<Film> getFilmsByCatAndRat(@PathVariable("catId") int catId, @PathVariable("rating") String rating){
+    public Iterable<Film> getFilmsByCatAndRat(@PathVariable("catId") int catId,
+                                              @PathVariable("rating") String rating){
         return filmRepository.findByCatAndRat(catId, rating);
     }
 
@@ -75,6 +83,85 @@ public class FilmController {
         film.setRating(updatedFilm.getRating());
         film.setLanguageId(updatedFilm.getLanguageId());
         film.setCategorySet(updatedFilm.getCategorySet());
+        film.setActors(updatedFilm.getActors());
+
+        return filmRepository.save(film);
+    }
+
+    @PutMapping("/addActor/{filmId}/{actorId}")
+    public Film addActorById(@PathVariable("filmId") int filmId,
+                             @PathVariable("actorId") int actorId){
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+        Actor actorToAdd = actorRepository.findById(actorId).orElseThrow(() -> new ResourceAccessException("Actor not found"));
+
+        Set<Actor> actorSet = film.getActors();
+
+        if(!actorSet.contains(actorToAdd)){
+            actorSet.add(actorToAdd);
+            film.setActors(actorSet);
+
+            Set<Film> filmSet = actorToAdd.getFilmsActedIn();
+            filmSet.add(film);
+            actorToAdd.setFilmsActedIn(filmSet);
+            actorRepository.save(actorToAdd);
+        }
+
+        return filmRepository.save(film);
+    }
+
+    @PutMapping("/removeActor/{filmId}/{actorId}")
+    public Film removeActorById(@PathVariable("filmId") int filmId,
+                                @PathVariable("actorId") int actorId){
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+        Actor actorToRemove = actorRepository.findById(actorId).orElseThrow(() -> new ResourceAccessException("Actor not found"));
+
+        Set<Actor> actorSet = film.getActors();
+        actorSet.remove(actorToRemove);
+        film.setActors(actorSet);
+
+        Set<Film> filmSet = actorToRemove.getFilmsActedIn();
+        filmSet.remove(film);
+        actorToRemove.setFilmsActedIn(filmSet);
+        actorRepository.save(actorToRemove);
+
+        return filmRepository.save(film);
+    }
+
+    @PutMapping("/addCat/{filmId}/{catId}")
+    public Film addCatById(@PathVariable("filmId") int filmId,
+                           @PathVariable("catId") int catId){
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+        Category catToAdd = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
+
+        Set<Category> catSet = film.getCategorySet();
+
+        if(!catSet.contains(catToAdd)){
+            catSet.add(catToAdd);
+            film.setCategorySet(catSet);
+
+            Set<Film> filmSet = catToAdd.getFilmSet();
+            filmSet.add(film);
+            catToAdd.setFilmSet(filmSet);
+            catRepository.save(catToAdd);
+        }
+
+        return filmRepository.save(film);
+    }
+
+    @PutMapping("/removeCat/{filmId}/{catId}")
+    public Film removeCatById(@PathVariable("filmId") int filmId,
+                              @PathVariable("catId") int catId){
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+        Category catToRemove = catRepository.findById(catId).orElseThrow(() -> new ResourceAccessException("Category not found"));
+
+        Set<Category> catSet = film.getCategorySet();
+        catSet.remove(catToRemove);
+        film.setCategorySet(catSet);
+
+        Set<Film> filmSet = catToRemove.getFilmSet();
+        filmSet.remove(film);
+        catToRemove.setFilmSet(filmSet);
+        catRepository.save(catToRemove);
 
         return filmRepository.save(film);
     }

@@ -4,6 +4,8 @@ import com.example.Sakila.API.Controller.FilmController;
 import com.example.Sakila.API.Model.Actor;
 import com.example.Sakila.API.Model.Category;
 import com.example.Sakila.API.Model.Film;
+import com.example.Sakila.API.Repository.ActorRepository;
+import com.example.Sakila.API.Repository.CatRepository;
 import com.example.Sakila.API.Repository.FilmRepository;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,6 +35,12 @@ class FilmControllerTests {
 
     @MockBean
     FilmRepository filmRepository;
+
+    @MockBean
+    ActorRepository actorRepository;
+
+    @MockBean
+    CatRepository catRepository;
 
     static List<Film> testData = new ArrayList<>();
     static Category action;

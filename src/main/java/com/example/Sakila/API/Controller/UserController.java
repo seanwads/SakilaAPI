@@ -67,50 +67,53 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @PutMapping("/addFilm/{userId}/{filmId}")
-    public User addFilmToUser(@PathVariable("userId") int userId, @PathVariable("filmId") int filmId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
-        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
-
-        for(Rental rental : user.getRentalSet()){
-            if(rental.getRentalInventory().getInventoryFilm().getFilmId() == filmId){
-                return user;
-            }
-        }
-
-        Inventory inventory = new Inventory();
-        Rental rental = new Rental();
-
-        inventory.setInventoryFilm(film);
-        rental.setRentalInventory(inventory);
-        rental.setRentalCustomer(user);
-
-        Set<Rental> userFilms = new HashSet<>(user.getRentalSet());
-        userFilms.add(rental);
-        user.setRentalSet(userFilms);
-
-        return userRepository.save(user);
-    }
-
-    @PutMapping("/removeFilm/{userId}/{filmId}")
-    public User removeFilmFromUser(@PathVariable("userId") int userId, @PathVariable("filmId") int filmId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
-        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
-
-        Rental rentalToDelete = null;
-
-        for(Rental rental : user.getRentalSet()){
-            if(rental.getRentalInventory().getInventoryFilm().getFilmId() == filmId){
-                rentalToDelete = rental;
-            }
-        }
-
-        Set<Rental> userFilms = new HashSet<>(user.getRentalSet());
-        userFilms.remove(rentalToDelete);
-        user.setRentalSet(userFilms);
-
-        return userRepository.save(user);
-    }
+//    @PutMapping("/addFilm/{userId}/{filmId}")
+//    public User addFilmToUser(@PathVariable("userId") int userId, @PathVariable("filmId") int filmId){
+//        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+//        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
+//
+//        for(Rental rental : user.getRentalSet()){
+//            if(rental.getRentalInventory().getInventoryFilm().getFilmId() == filmId){
+//                System.out.println("user already has film");
+//                return user;
+//            }
+//        }
+//
+//        Inventory inventory = new Inventory();
+//        Rental rental = new Rental();
+//
+//        inventory.setInventoryFilm(film);
+//        rental.setRentalInventory(inventory);
+//        rental.setRentalCustomer(user);
+//
+//        Set<Rental> userFilms = new HashSet<>(user.getRentalSet());
+//        userFilms.add(rental);
+//        user.setRentalSet(userFilms);
+//
+//        return userRepository.save(user);
+//    }
+//
+//    @PutMapping("/removeFilm/{userId}/{filmId}")
+//    public User removeFilmFromUser(@PathVariable("userId") int userId, @PathVariable("filmId") int filmId){
+//        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceAccessException(notFoundResponse));
+//        Film film = filmRepository.findById(filmId).orElseThrow(() -> new ResourceAccessException("Film not found"));
+//
+//        Rental rentalToDelete = null;
+//
+//        for(Rental rental : user.getRentalSet()){
+//            if(rental.getRentalInventory().getInventoryFilm().getFilmId() == filmId){
+//                rentalToDelete = rental;
+//            }
+//        }
+//
+//        Set<Rental> userFilms = new HashSet<>(user.getRentalSet());
+//        userFilms.remove(rentalToDelete);
+//        user.setRentalSet(userFilms);
+//
+//        System.out.println("added film");
+//
+//        return userRepository.save(user);
+//    }
 
     @PostMapping("/create")
     public User createUser(@RequestBody User newUser){

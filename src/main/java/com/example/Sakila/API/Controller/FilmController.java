@@ -84,13 +84,6 @@ public class FilmController {
         film.setRating(updatedFilm.getRating());
         film.setLanguageId(updatedFilm.getLanguageId());
         film.setCategorySet(updatedFilm.getCategorySet());
-
-        for(Actor actor : updatedFilm.getActors()){
-            Set<Film> filmSet = new HashSet<>(actor.getFilmsActedIn());
-            filmSet.add(film);
-            actor.setFilmsActedIn(filmSet);
-        }
-
         film.setActors(updatedFilm.getActors());
 
         return filmRepository.save(film);

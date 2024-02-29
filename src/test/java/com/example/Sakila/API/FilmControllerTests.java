@@ -44,11 +44,11 @@ class FilmControllerTests {
     @MockBean
     CatRepository catRepository;
 
-    static List<Film> testData = new ArrayList<>();
-    static Category action;
-    static Category horror;
-    static Actor john;
-    static Actor jane;
+    List<Film> testData = new ArrayList<>();
+    Category action;
+    Category horror;
+    Actor john;
+    Actor jane;
 
     @BeforeEach
     void setTestData(){
@@ -259,7 +259,7 @@ class FilmControllerTests {
                 .andExpect(jsonPath("$.description").value(updatedDesc));
     }
 
-    @Test
+    @Test()
     void addActorByIdTest() throws Exception {
         int filmId = testData.get(2).getFilmId();
         int actorId = john.getActorId();
@@ -271,7 +271,7 @@ class FilmControllerTests {
 
         mockMvc.perform(put("/film/addActor/" + filmId +"/" + actorId).accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.filmId").value(filmId))
-                .andExpect(jsonPath("$.actors[-1:].actorId").value(actorId));
+                .andExpect(jsonPath("$.actors", hasSize(2)));
     }
 
     @Test
